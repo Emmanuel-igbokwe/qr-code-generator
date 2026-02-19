@@ -3,9 +3,8 @@
 function esc(value = "") {
   // Escape backslashes, commas, and semicolons per vCard specs
   return String(value)
-    .replace(/\\/g, "\\\\")  // \ → \\
-    .replace(/,/g, "\\,")   // , → \,
-    .replace(/;/g, "\\;");  // ; → \;
+    .replace(/\\/g, "\\\\")   // \  → \\
+    .replace(/([,;])/g, "\\$1"); // , or ; → \, or \;
 }
 
 export function buildVCard({
@@ -38,8 +37,8 @@ export function buildVCard({
   if (url) lines.push(`URL:${esc(url)}`);
 
   const hasAddress = street || city || region || postal || country;
-
   if (hasAddress) {
+    // ADR;TYPE=WORK:PO-Box;Extended;Street;City;Region;Postal;Country
     const adr = [
       "",
       "",
@@ -54,6 +53,5 @@ export function buildVCard({
   }
 
   lines.push("END:VCARD");
-
   return lines.join("\n");
 }
